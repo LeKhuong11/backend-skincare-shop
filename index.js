@@ -31,7 +31,7 @@ app.use(bodyParser.json());
 
     
 app.use('/api/', router);
-app.use("/files", express.static('./resources/static/assets/uploads'));
+app.use("/files", express.static('./uploads'));
 app.get('/', (req, res) => {
   res.send({message: "SERVER ON"})
 })
