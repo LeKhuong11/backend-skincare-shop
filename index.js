@@ -9,12 +9,6 @@ const db_url = 'mongodb+srv://khuongdev11:khuongle1102@cluster0.ttgcd6s.mongodb.
 
 global.__basedir = __dirname;
 
-var corsOptions = {
-  origin: "https://backend-skincare-shop.vercel.app"
-};
-app.use(cors(corsOptions));
-
-app.use("/files", express.static('./public'));
 app.use(cors({
   origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE']
@@ -23,15 +17,17 @@ app.use(cors({
 app.use(express.json())
 
 mongoose.connect(db_url)
-    .then(res => {
-        console.log('connected susscessfully');
-    })
+.then(res => {
+  console.log('connected susscessfully');
+})
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
-    
+
 app.use('/api/', router);
+app.use("/files", express.static('./public/uploads'));
+
 app.get('/', (req, res) => {
   res.send({message: "SERVER ON"})
 })
