@@ -10,7 +10,7 @@ const db_url = 'mongodb+srv://khuongdev11:khuongle1102@cluster0.ttgcd6s.mongodb.
 global.__basedir = __dirname;
 
 var corsOptions = {
-  origin: "http://localhost:3000"
+  origin: "https://backend-skincare-shop.vercel.app"
 };
 app.use(cors(corsOptions));
 
