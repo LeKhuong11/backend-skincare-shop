@@ -1,7 +1,7 @@
 const fs = require('fs')
 const Product = require('../models/productsModels')
 const uploadFile = require("../middlewares/upload");
-const baseUrl = 'http://localhost:3000/api/files/';
+const baseUrl = 'https://backend-skincare-shop.vercel.app/api/files/';
 
 const getAll = async (req, res) => {
   try {
