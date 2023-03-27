@@ -1,7 +1,7 @@
 const fs = require('fs')
 const Product = require('../models/productsModels')
 const uploadFile = require("../middlewares/upload");
-const baseUrl = 'https://backend-skincare-shop.vercel.app/api/files/';
+const cloudinary = require('../utils/cloudinary');
 
 const getAll = async (req, res) => {
   try {
@@ -25,6 +25,12 @@ const getOne =  async (req, res) => {
 const postOne = async (req, res) => {
   const data = req.body
   try {
+      await uploadFile(req, res);
+      const resultClodinary = cloudinary.uploader.upload(req.file.path);
+      data.img = {
+        public_id:  (await resultClodinary).public_id,
+        url: (await resultClodinary).secure_url
+      }
       const product = await Product.create(data);
       res.status(200).json(product)
   } catch(err) {
@@ -32,13 +38,18 @@ const postOne = async (req, res) => {
   } 
 }
 
+
 const updateOne = async (req, res) => {
   const id = req.params.id;
   const data = req.body
   try {
     await uploadFile(req, res);
-    if (req.file) {
-      data.img = baseUrl + req.file.originalname;
+    if(req.file) {
+      const resultClodinary = cloudinary.uploader.upload(req.file.path);
+      data.img = {
+        public_id:  (await resultClodinary).public_id,
+        url: (await resultClodinary).secure_url
+      }
     }
     const product = await Product.findByIdAndUpdate(id, data);
     product.img = data?.img

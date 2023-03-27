@@ -16,8 +16,14 @@ const productSchema = mongoose.Schema(
             require: [ true, 'Please enter product description'],
         },
         img: {
-            type: String,
-            require: true
+            public_id: {
+                type: String,
+                require: true
+            },
+            url: {
+                type: String,
+                require: true
+            }
         },
         discouter: {
             type: Number,   
