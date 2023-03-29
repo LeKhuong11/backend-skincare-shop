@@ -5,8 +5,8 @@ const app = express()
 const mongoose = require('mongoose')
 const cors = require('cors')
 const port = 3000;
-const path = require('path')
-const router = require('./routes/productsRouter')
+const productRouter = require('./routes/productsRouter')
+const authRouter = require('./routes/authenticationRouter')
 const db_url = process.env.MONGODB_URL
 
 global.__basedir = __dirname;
@@ -27,9 +27,9 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
 
-app.use('/api/', router);
+app.use('/api/', productRouter);
+app.use('/auth/', authRouter);
 app.use(express.static('uploads')); 
-app.use("/files",  express.static(path.join(__dirname, './uploads')))
 
 app.get('/', (req, res) => {
   res.send({message: "SERVER ON"})
