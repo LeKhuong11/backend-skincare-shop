@@ -38,6 +38,9 @@ const authController = {
                 password: passwordHashed,
                 displayName: req.body.displayName,
                 birthDay: req.body.birthDay,
+                avatar: null,
+                cart: [],
+                isAdmin: false,
             })
 
             //SAVE USER TO DB
@@ -47,23 +50,63 @@ const authController = {
             res.status(500).json(err)
         }
     },
+    changePassword: async (req, res) => {
+        const password = req.body.password;
+        const newPassword = req.body.newPassword
+        const confirmPassword = req.body.confirmPassword
+        const userName = req.body.userName;
+        const id = req.params.id;
+        const salt = await bcrypt.genSalt(10)
+        try {
+            //Kiem tra user nguoi dung gui len co hop le hay khong
+            const user = await User.findOne({userName: userName})
+            if(user) {
+                //So sanh pasword nguoi dung gui co giong voi pasword duoc luu tren he thong
+                const validPassword = await bcrypt.compare(
+                    password, user.password
+                )
+                if(!validPassword) {
+                    res.status(404).json({message: 'Wrong password!'})
+                }
+                if(user && validPassword) {
+                    //So sanh password va confirm pasword, neu giong nhau thi se tien hanh update pasword
+                    if(newPassword === confirmPassword) {
+                        //Truong khi update password phải hash no di tranh de bi nhin thay
+                        const passwordHashed = await bcrypt.hash(newPassword, salt)
+                        const data = {
+                            password: passwordHashed
+                        }
+                        const userUpdate = await User.findByIdAndUpdate(id, data)
+                        res.status(200).json({message: 'Update password susscessfully!'})
+                    } else {
+                        //Truong hop password va confirm password khong giong nhau return error 400
+                        res.status(404).json({message: 'Password and confirm password are not the same!'})
+                    }
+                }
+            }
+            else {
+                res.status(404).json({message: 'Wrong UserName!'})
+            }
+        } catch(err) {
+            console.log(err);
+        }
+    },
 
     updateUser: async (req, res) => {
         const id = req.params.id;
         const data = req.body
+        
         try {
-            console.log(data);
             await uploadAvatar(req, res);
             if(req.file) {
                 console.log(req.file, data);
               }
-            // const userUpdate = await User.findByIdAndUpdate(id, data)
-            res.status(200).json(req.file)
+            const userUpdate = await User.findByIdAndUpdate(id, data)
+            res.status(200).json(userUpdate)
         } catch(err) {
             console.log(err);
             res.status(500).json(err)
         }
-       
     }
 }
 
