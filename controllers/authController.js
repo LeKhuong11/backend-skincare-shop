@@ -1,6 +1,9 @@
 const User = require('../models/authenticationModels')
 const bcrypt = require('bcrypt')
 const uploadAvatar = require('../middlewares/uploadAvatar')
+const cloudinary = require('../utils/cloudinary');
+
+
 const authController = {
 
     login: async (req, res) => {
@@ -92,17 +95,18 @@ const authController = {
         }
     },
 
-    updateUser: async (req, res) => {
-        const id = req.params.id;
-        const data = req.body
-        
+    changeAvatar: async (req, res) => {
+        const id = req.params.id
+        const data = {}
+
         try {
             await uploadAvatar(req, res);
             if(req.file) {
-                console.log(req.file, data);
-              }
-            const userUpdate = await User.findByIdAndUpdate(id, data)
-            res.status(200).json(userUpdate)
+                const resultClodinary = cloudinary.uploader.upload(req.file.path);
+                data.avatar = (await resultClodinary).secure_url
+            }
+            await User.findByIdAndUpdate(id, data)
+            res.status(200).json(data.avatar)
         } catch(err) {
             console.log(err);
             res.status(500).json(err)

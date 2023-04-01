@@ -36,14 +36,7 @@ const userSchema = mongoose.Schema(
             default: []
         },
         avatar: {
-            public_id: {
-                type: String,
-                require: true
-            },
-            url: {
-                type: String,
-                require: true
-            }
+            type: String,
         }
     }
 )
