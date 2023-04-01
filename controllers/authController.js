@@ -94,7 +94,17 @@ const authController = {
             console.log(err);
         }
     },
-
+    updateUser : async (req, res) => {
+        const id = req.params.id
+        const data = req.body
+        try {
+            const updateUser = await User.findByIdAndUpdate(id, data)
+            res.status(200).json(updateUser)
+        } catch(err) {
+            console.log(err);
+            res.status(500).json(err)
+        }
+    },
     changeAvatar: async (req, res) => {
         const id = req.params.id
         const data = {}
