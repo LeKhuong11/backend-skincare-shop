@@ -99,6 +99,9 @@ const authController = {
         const data = req.body
         try {
             const updateUser = await User.findByIdAndUpdate(id, data)
+            updateUser.email = data.email;
+            updateUser.displayName = data.displayName;
+            updateUser.birthDay = data.birthDay
             res.status(200).json(updateUser)
         } catch(err) {
             console.log(err);
