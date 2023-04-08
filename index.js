@@ -7,9 +7,10 @@ const cors = require('cors')
 const port = 3000;
 const productRouter = require('./routes/productsRouter')
 const authRouter = require('./routes/authenticationRouter')
+const sendMailForgotPasswordRouter = require('./routes/sendMailForgotPasswordRouter')
 const db_url = process.env.MONGODB_URL
 
-global.__basedir = __dirname;
+// global.__basedir = __dirname;
 
 app.use(cors({
   origin: '*',
@@ -18,18 +19,21 @@ app.use(cors({
 
 app.use(express.json())
 
+//Connect Mongoose
 mongoose.connect(db_url)
 .then(res => {
-  console.log('connected susscessfully');
+  console.log('Connected susscessfully');
 })
 
+//Body Parser
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
 
+//Api Routes
 app.use('/api/', productRouter);
 app.use('/auth/', authRouter);
-app.use(express.static('uploads')); 
+app.use('/forgot-password/', sendMailForgotPasswordRouter)
 
 app.get('/', (req, res) => {
   res.send({message: "SERVER ON"})

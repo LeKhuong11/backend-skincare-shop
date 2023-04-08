@@ -74,12 +74,12 @@ const authController = {
                 if(user && validPassword) {
                     //So sanh password va confirm pasword, neu giong nhau thi se tien hanh update pasword
                     if(newPassword === confirmPassword) {
-                        //Truong khi update password phải hash no di tranh de bi nhin thay
+                        //Khi update password phải hash no di tranh de bi nhin thay
                         const passwordHashed = await bcrypt.hash(newPassword, salt)
                         const data = {
                             password: passwordHashed
                         }
-                        const userUpdate = await User.findByIdAndUpdate(id, data)
+                        await User.findByIdAndUpdate(id, data)
                         res.status(200).json({message: 'Update password susscessfully!'})
                     } else {
                         //Truong hop password va confirm password khong giong nhau return error 400
